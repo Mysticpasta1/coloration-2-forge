@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.mystic.coloration.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "coloration.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

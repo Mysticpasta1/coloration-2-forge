@@ -41,7 +41,7 @@ public class RGBDyeItem extends Item {
                     CompoundTag nbt = heldItemStack.getTag();
                     if (nbt != null && nbt.contains("color", CompoundTag.TAG_INT)) {
                         int color = getColor(heldItemStack);
-                        worldIn.setBlock(context.getClickedPos(), coloredBlock.withColor(blockState, MaterialColor.byId(color)), 3);
+                        worldIn.setBlock(context.getClickedPos(), coloredBlock.withColor(blockState, color), 3);
                         heldItemStack.shrink(1);
                         return InteractionResult.SUCCESS;
                     }

@@ -10,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
 
+import java.awt.*;
+
 public class ColorPickerGui extends Screen {
 
     private final int DEFAULT_COLOR = 0xFFFFFFFF; // Default color is white
@@ -33,21 +35,37 @@ public class ColorPickerGui extends Screen {
     @Override
     protected void init() {
         int x = (this.width - 200) / 2;
-        int y = (this.height - 160) / 2;
+        int y = (this.height - 190) / 2;
 
-        redSlider = new ForgeSlider(x + 10, y + 30, 180, 20, Component.translatable("gui.color_picker.red"), Component.empty(), 0, 255, (color & 0xFF000000) >>> 24, 1, 1, false);
+        // Convert rgba to hsba
+        Color colorObj = new Color(color);
+        float[] hsba = Color.RGBtoHSB(colorObj.getRed(), colorObj.getGreen(), colorObj.getBlue(), null);
+
+        redSlider = new ForgeSlider(x + 10, y + 30, 180, 20, Component.translatable("gui.color_picker.red"), Component.empty(), 0, 255, colorObj.getRed(), 1, 1, false);
         this.addWidget(redSlider);
 
-        greenSlider = new ForgeSlider(x + 10, y + 55, 180, 20, Component.translatable("gui.color_picker.green"), Component.empty(), 0, 255, (color & 0x00FF0000) >>> 16, 1, 1, false);
+        greenSlider = new ForgeSlider(x + 10, y + 55, 180, 20, Component.translatable("gui.color_picker.green"), Component.empty(), 0, 255, colorObj.getGreen(), 1, 1, false);
         this.addWidget(greenSlider);
 
-        blueSlider = new ForgeSlider(x + 10, y + 80, 180, 20, Component.translatable("gui.color_picker.blue"), Component.empty(), 0, 255, (color & 0x0000FF00) >>> 8, 1, 1, false);
+        blueSlider = new ForgeSlider(x + 10, y + 80, 180, 20, Component.translatable("gui.color_picker.blue"), Component.empty(), 0, 255, colorObj.getBlue(), 1, 1, false);
         this.addWidget(blueSlider);
 
-        alphaSlider = new ForgeSlider(x + 10, y + 105, 180, 20, Component.translatable("gui.color_picker.alpha"), Component.empty(), 0, 255, (color & 0x000000FF), 1, 1, false);
+        alphaSlider = new ForgeSlider(x + 10, y + 105, 180, 20, Component.translatable("gui.color_picker.alpha"), Component.empty(), 0, 255, colorObj.getAlpha(), 1, 1, false);
         this.addWidget(alphaSlider);
 
-        Button doneButton = this.addWidget(new Button(x + 60, y + 130, 80, 20, Component.translatable("gui.done"), (p_214318_1_) -> {
+        // Add hue slider
+        ForgeSlider hueSlider = new ForgeSlider(x + 10, y + 130, 180, 20, Component.translatable("gui.color_picker.hue"), Component.empty(), 0, 255, (int) (hsba[0] * 255), 1, 1, false);
+        this.addWidget(hueSlider);
+
+        // Add saturation slider
+        ForgeSlider saturationSlider = new ForgeSlider(x + 10, y + 155, 180, 20, Component.translatable("gui.color_picker.saturation"), Component.empty(), 0, 255, (int) (hsba[1] * 255), 1, 1, false);
+        this.addWidget(saturationSlider);
+
+        // Add brightness slider
+        ForgeSlider brightnessSlider = new ForgeSlider(x + 10, y + 180, 180, 20, Component.translatable("gui.color_picker.brightness"), Component.empty(), 0, 255, (int) (hsba[2] * 255), 1, 1, false);
+        this.addWidget(brightnessSlider);
+
+        Button doneButton = this.addWidget(new Button(x + 60, y + 205, 80, 20, Component.translatable("gui.done"), (p_214318_1_) -> {
             callback.run();
             this.minecraft.setScreen(null);
         }));
@@ -66,6 +84,18 @@ public class ColorPickerGui extends Screen {
         int b = (int) blueSlider.getValue();
         int a = (int) alphaSlider.getValue();
         int color = (r << 24) | (g << 16) | (b << 8) | a;
+
+        // Convert RGBA to HSB
+        float[] hsb = Color.RGBtoHSB(r, g, b, null);
+        float hue = hsb[0];
+        float saturation = hsb[1];
+        float brightness = hsb[2];
+
+        // Display HSB values
+        drawString(matrixStack, this.font, "Hue: " + (int)(hue * 360), this.width / 2 + 80, this.height / 2 - 20, 16777215);
+        drawString(matrixStack, this.font, "Saturation: " + (int)(saturation * 100) + "%", this.width / 2 + 80, this.height / 2 - 10, 16777215);
+        drawString(matrixStack, this.font, "Brightness: " + (int)(brightness * 100) + "%", this.width / 2 + 80, this.height / 2, 16777215);
+
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
 
@@ -110,14 +140,6 @@ public class ColorPickerGui extends Screen {
         tessellator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
-    }
-
-    public int getColor() {
-        int r = Mth.clamp((int) redSlider.getValue(), 0, 255);
-        int g = Mth.clamp((int) greenSlider.getValue(), 0, 255);
-        int b = Mth.clamp((int) blueSlider.getValue(), 0, 255);
-        int a = Mth.clamp((int) alphaSlider.getValue(), 0, 255);
-        return (r << 24) | (g << 16) | (b << 8) | a;
     }
 
     @Override

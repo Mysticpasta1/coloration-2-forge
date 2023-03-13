@@ -11,10 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -23,7 +21,7 @@ public class ColoredBlocks {
     public static class ColoredCubeBlock extends BaseEntityBlock implements IColoredBlock {
 
         public ColoredCubeBlock() {
-            super(Properties.of(Material.STONE).requiresCorrectToolForDrops().sound(SoundType.STONE).strength(1.0f));
+            super(Properties.copy(Blocks.STONE).lootFrom(() -> Blocks.STONE));
         }
 
         @Override

@@ -10,10 +10,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
 
 import java.awt.*;
 
+@OnlyIn(Dist.CLIENT)
 public class ColorPickerGui extends Screen {
 
     public static final int DEFAULT_COLOR = 0xFFFFFFFF; // Default color is white

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RGB",
+    "SSS",
+    "RGB"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:red_dye"
+    },
+
+    "G": {
+      "item": "minecraft:green_dye"
+    },
+
+    "B": {
+      "item": "minecraft:blue_dye"
+    },
+
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "result": {
+    "item": "coloration:colored_solid_block",
+    "count": 3
+  }
+}

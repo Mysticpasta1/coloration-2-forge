@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RGB",
+    "   ",
+    "RGB "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:red_dye"
+    },
+
+    "G": {
+      "item": "minecraft:green_dye"
+    },
+
+    "B": {
+      "item": "minecraft:blue_dye"
+    }
+  },
+  "result": {
+    "item": "coloration:colored_air_block",
+    "count": 3
+  }
+}

@@ -15,6 +15,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class RGBDyeItem extends Item {
@@ -79,6 +81,7 @@ public class RGBDyeItem extends Item {
         return 0xFFFFFFFF; // default to white if no color is set
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void openColorPicker() {
         Minecraft.getInstance().setScreen(new ColorPickerGui());
     }

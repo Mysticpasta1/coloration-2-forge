@@ -39,8 +39,8 @@ public class Coloration {
         ITEMS.register(bus);
         BLOCK_ENTITIES.register(bus);
 
-        COLORED_CUBE = registerBlock("colored_solid_block", () -> new ColoredBlocks.ColoredCubeBlock(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE)));
-        COLORED_AIR = registerBlock("colored_air_block", () -> new ColoredBlocks.ColoredGasBlock(BlockBehaviour.Properties.of(Material.AIR)));
+        COLORED_CUBE = registerBlock("colored_solid_block", ColoredBlocks.ColoredCubeBlock::new);
+        COLORED_AIR = registerBlock("colored_air_block", ColoredBlocks.ColoredGasBlock::new);
         ITEMS.register("rgb_picker", RGBDyeItem::new);
 
         COLORED_CUBE_ENTITY = BLOCK_ENTITIES.register("colored_solid_block", () -> BlockEntityType.Builder.of(ColoredBlocks.ColoredCubeBlockEntity::new, COLORED_CUBE.get(), COLORED_AIR.get()).build(null));

@@ -22,8 +22,8 @@ import javax.annotation.Nullable;
 public class ColoredBlocks {
     public static class ColoredCubeBlock extends BaseEntityBlock implements IColoredBlock {
 
-        public ColoredCubeBlock(Properties properties) {
-            super(properties.strength(4.0f));
+        public ColoredCubeBlock() {
+            super(Properties.copy(Blocks.STONE).destroyTime(2.0f));
         }
 
         @Override
@@ -45,8 +45,8 @@ public class ColoredBlocks {
 
     public static class ColoredGasBlock extends BaseEntityBlock implements IColoredBlock {
 
-        public ColoredGasBlock(Properties properties) {
-            super(properties.air().instabreak().noCollission());
+        public ColoredGasBlock() {
+            super(Properties.copy(Blocks.AIR));
         }
 
         @Override
@@ -68,7 +68,7 @@ public class ColoredBlocks {
 
     public static class ColoredCubeBlockEntity extends BlockEntity {
 
-        public int color = 0x000000;
+        public int color;
 
         public ColoredCubeBlockEntity(BlockPos pos, BlockState state) {
             super(Coloration.COLORED_CUBE_ENTITY.get(), pos, state);

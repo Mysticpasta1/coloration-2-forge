@@ -2,7 +2,8 @@
   "parent": "block/cube_all",
   "textures": {
     "all": "coloration:blocks/colored_solid_block",
-    "particle": "coloration:blocks/colored_solid_block"
+    "particle": "coloration:blocks/colored_solid_block",
+    "inventory": "coloration:blocks/colored_solid_block"
   },
   "elements": [
     {

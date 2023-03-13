@@ -1,0 +1,9 @@
+{
+  "gui.color_picker.red": "Red: ",
+  "gui.color_picker.green": "Green: ",
+  "gui.color_picker.blue": "Blue: ",
+  "gui.color_picker.title": "RGB Color Picker",
+  "item.coloration.rgb_picker": "RGB Picker",
+  "block.coloration.colored_solid_block": "Colored Cube Block",
+  "block.coloration.colored_air_block": "Colored Gas Block"
+}

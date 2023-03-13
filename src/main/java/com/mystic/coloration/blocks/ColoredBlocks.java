@@ -1,59 +1,123 @@
 package com.mystic.coloration.blocks;
 
+import com.mystic.coloration.Coloration;
 import com.mystic.coloration.IColoredBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.Direction;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
+import com.mystic.coloration.RGBDyeItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BellBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class ColoredBlocks {
-    public static IntegerProperty COLOR = IntegerProperty.create("color", 0xFFFFFFFF, 0x00000000);
-    public static IntegerProperty TINT_INDEX = IntegerProperty.create("tint_index", 0, 3);
+    public static class ColoredCubeBlock extends BaseEntityBlock implements IColoredBlock {
 
-    public static class ColoredCubeBlock extends Block implements IColoredBlock {
         public ColoredCubeBlock(Properties properties) {
-            super(properties.strength(4.0f).noOcclusion());
+            super(properties.strength(4.0f));
         }
 
         @Override
-        public BlockState withColor(BlockState blockState, int color) {
-            blockState =  blockState.setValue(COLOR, color);
+        public RenderShape getRenderShape(BlockState blockState) {
+            return RenderShape.MODEL;
+        }
 
-            ModelResourceLocation modelLocation = new ModelResourceLocation(ModelLocationUtils.getModelLocation(blockState.getBlock()).getPath());
-            BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
-            for (Direction face : Direction.values()) {
-                List<BakedQuad> quad = model.getQuads(blockState, face, RandomSource.create());
-                for (BakedQuad bakedQuad : quad) {
-                    if (bakedQuad != null && bakedQuad.getTintIndex() == 1) {
-                        blockState = blockState.setValue(TINT_INDEX, 1);
-                        break;
-                    }
-                }
-            }
-
+        @Override
+        public BlockState withColor(BlockState blockState, int color, Level level, BlockPos blockPos) {
             return blockState;
         }
-    }
 
-    public static class ColoredStairsBlock extends StairBlock {
-        public ColoredStairsBlock(StairBlock block) {
-            super(block::defaultBlockState, Properties.copy(block));
+        @org.jetbrains.annotations.Nullable
+        @Override
+        public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+            return new ColoredCubeBlockEntity(blockPos, blockState);
         }
     }
 
-    public static class ColoredSlabBlock extends SlabBlock {
-        public ColoredSlabBlock(SlabBlock block) {
-            super(Properties.copy(block));
+    public static class ColoredGasBlock extends BaseEntityBlock implements IColoredBlock {
+
+        public ColoredGasBlock(Properties properties) {
+            super(properties.air().instabreak().noCollission());
+        }
+
+        @Override
+        public RenderShape getRenderShape(BlockState blockState) {
+            return RenderShape.MODEL;
+        }
+
+        @Override
+        public BlockState withColor(BlockState blockState, int color, Level level, BlockPos blockPos) {
+            return blockState;
+        }
+
+        @org.jetbrains.annotations.Nullable
+        @Override
+        public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+            return new ColoredCubeBlockEntity(blockPos, blockState);
+        }
+    }
+
+    public static class ColoredCubeBlockEntity extends BlockEntity {
+
+        public int color = 0x000000;
+
+        public ColoredCubeBlockEntity(BlockPos pos, BlockState state) {
+            super(Coloration.COLORED_CUBE_ENTITY.get(), pos, state);
+        }
+
+        public void readNbt(CompoundTag nbt) {
+            if(nbt != null) {
+                if (nbt.contains("color", CompoundTag.TAG_INT)) {
+                    color = nbt.getInt("color");
+                }
+            }
+        }
+        public void writeNbt(CompoundTag nbt) {
+            nbt.putInt("color", color);
+        }
+
+        public void sync() {
+            setChanged();
+            if(getLevel() != null)
+                getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+        }
+
+        @Override
+        public void load(@NotNull CompoundTag nbt) {
+            super.load(nbt);
+            nbt.putInt("color", color);
+            readNbt(nbt);
+        }
+
+        @Override
+        protected void saveAdditional(@NotNull CompoundTag nbt) {
+            super.saveAdditional(nbt);
+            if (nbt.contains("color", CompoundTag.TAG_INT)) {
+                nbt.getInt("color");
+            }
+            writeNbt(nbt);
+        }
+
+        @Override
+        public @NotNull CompoundTag getUpdateTag() {
+            CompoundTag tag = new CompoundTag();
+            saveAdditional(tag);
+            return tag;
+        }
+
+        @Nullable
+        @Override
+        public Packet<ClientGamePacketListener> getUpdatePacket() {
+            return ClientboundBlockEntityDataPacket.create(this);
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "parent": "coloration:blocks/colored_solid_block",
+  "parent": "coloration:block/colored_solid_block",
   "textures": {
     "particle": "coloration:blocks/colored_solid_block",
     "all": "coloration:blocks/colored_solid_block"

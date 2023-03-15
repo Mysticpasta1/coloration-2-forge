@@ -66,7 +66,7 @@ public class ColoredBlocks {
 
     public static class ColoredCubeBlockEntity extends BlockEntity {
 
-        public static int color = 0;
+        public int color;
 
         public ColoredCubeBlockEntity(BlockPos pos, BlockState state) {
             super(Coloration.COLORED_CUBE_ENTITY.get(), pos, state);
